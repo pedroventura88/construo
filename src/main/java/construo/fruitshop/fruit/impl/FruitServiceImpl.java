@@ -1,23 +1,21 @@
 package construo.fruitshop.fruit.impl;
 
 import construo.fruitshop.common.mapper.PageMapper;
-import construo.fruitshop.fruit.*;
-import construo.fruitshop.fruit.dto.FruitInput;
-import construo.fruitshop.fruit.dto.FruitOutput;
-import construo.fruitshop.fruit.dto.FruitsOutput;
+import construo.fruitshop.fruit.FruitEntity;
+import construo.fruitshop.fruit.FruitMapper;
+import construo.fruitshop.fruit.FruitRepository;
+import construo.fruitshop.fruit.FruitService;
+import construo.fruitshop.fruit.dto.FruitDto;
+import construo.fruitshop.fruit.dto.FruitsDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,7 +31,7 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public FruitsOutput getAll(Optional<Integer> pageNumber, Optional<Integer> pageSize) {
+    public FruitsDto getAll(Optional<Integer> pageNumber, Optional<Integer> pageSize) {
         if (!pageNumber.isPresent()) {
             pageNumber = Optional.of(PageMapper.setDefaultPageNumber());
         }
@@ -44,15 +42,15 @@ public class FruitServiceImpl implements FruitService {
 
         Pageable pageable = PageMapper.toPageable(pageNumber.get(), pageSize.get());
         Page<FruitEntity> pageFruitEntity = fruitRepository.findAll(pageable);
-        Page<FruitOutput> pageFruitDto = pageFruitEntity.map(fruit -> mapper.toDto(fruit));
+        Page<FruitDto> pageFruitDto = pageFruitEntity.map(fruit -> mapper.toDto(fruit));
 
-        FruitsOutput fruitsOutput = new FruitsOutput(pageFruitDto.getContent());
-        fruitsOutput.setPage(PageMapper.toPageDto(pageFruitDto));
-        return fruitsOutput;
+        FruitsDto fruitsDto = new FruitsDto(pageFruitDto.getContent());
+        fruitsDto.setPage(PageMapper.toPageDto(pageFruitDto));
+        return fruitsDto;
     }
 
 
-    public FruitOutput createFruit(FruitInput fruit) {
+    public FruitDto createFruit(FruitDto fruit) {
         validateFruitInput(fruit);
 
         FruitEntity entity = new FruitEntity();
@@ -74,20 +72,19 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public boolean deleteFruitById(Long fruitId) {
+    public boolean deleteFruitById(Long id) {
         try {
-            fruitRepository.deleteById(fruitId);
+            fruitRepository.deleteById(id);
             return true;
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("Fruit with ID " + fruitId + " not found for deletion.");
+            throw new RuntimeException("Fruit with ID " + id + " not found for deletion.");
         } catch (Exception e) {
-            // Handle other exceptions, e.g., database errors
-            throw new RuntimeException("An error occurred while deleting the fruit with ID " + fruitId + ".", e);
+            throw new RuntimeException("An error occurred while deleting the fruit with ID " + id + ".", e);
         }
     }
 
 
-    private void validateFruitInput(FruitInput fruit) {
+    private void validateFruitInput(FruitDto fruit) {
         if (StringUtils.isEmpty(fruit.getName()) || fruit.getPrice() <= 0) {
             throw new IllegalArgumentException("Fruit name must not be empty, and price must be greater than zero.");
         }

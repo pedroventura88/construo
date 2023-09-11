@@ -1,10 +1,9 @@
 package construo.fruitshop.fruit.dto;
 
+import construo.fruitshop.common.dto.ItemBaseDto;
 import lombok.Data;
 
 @Data
-public class FruitInput {
-    private String name;
-    private Double price;
+public class FruitDto  extends ItemBaseDto {
     private Integer levelOfSweet;
 }

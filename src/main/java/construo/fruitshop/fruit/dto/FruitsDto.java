@@ -6,11 +6,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FruitsOutput {
-    private List<FruitOutput> items;
+public class FruitsDto {
+    private List<FruitDto> items;
     private PageDto page;
 
-    public FruitsOutput(List<FruitOutput> items) {
+    public FruitsDto(List<FruitDto> items) {
         this.items = items;
     }
 }

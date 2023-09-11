@@ -1,11 +1,8 @@
 package construo.fruitshop.fruit;
 
 import construo.fruitshop.common.dto.ErrorResponse;
-import construo.fruitshop.fruit.dto.FruitInput;
-import construo.fruitshop.fruit.dto.FruitOutput;
-import construo.fruitshop.fruit.dto.FruitsOutput;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import construo.fruitshop.fruit.dto.FruitDto;
+import construo.fruitshop.fruit.dto.FruitsDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -17,8 +14,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/fruits")
 public class FruitController {
-    private static final Logger LOG = LoggerFactory.getLogger(FruitController.class);
-
     private FruitService fruitService;
 
     public FruitController(FruitService fruitService) {
@@ -31,7 +26,7 @@ public class FruitController {
             @RequestParam(required = false) Optional<Integer> pageSize) {
 
         try {
-            FruitsOutput fruitPage = fruitService.getAll(pageNumber, pageSize);
+            FruitsDto fruitPage = fruitService.getAll(pageNumber, pageSize);
             return ResponseEntity.ok(fruitPage);
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,10 +35,10 @@ public class FruitController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> createFruit(@RequestBody FruitInput fruitInput) {
+    public ResponseEntity<?> createFruit(@RequestBody FruitDto fruitInput) {
         try {
             validateInput(fruitInput);
-            FruitOutput fruitCreated = fruitService.createFruit(fruitInput);
+            FruitDto fruitCreated = fruitService.createFruit(fruitInput);
             return ResponseEntity.ok(fruitCreated);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Validation Error", e.getMessage()));
@@ -54,13 +49,13 @@ public class FruitController {
         }
     }
 
-    private void validateInput(FruitInput fruitInput) throws ValidationException {
+    private void validateInput(FruitDto fruitInput) throws ValidationException {
         if (StringUtils.isEmpty(fruitInput.getName()) || fruitInput.getPrice() == null) {
             throw new ValidationException("Some mandatory fields are missing");
         }
     }
 
-    @DeleteMapping("/{fruitId}")
+    @DeleteMapping("/private/{fruitId}")
     public ResponseEntity<String> deleteFruitById(@PathVariable Long fruitId) {
         try {
             boolean deleted = fruitService.deleteFruitById(fruitId);

@@ -19,28 +19,22 @@ public class DataInitializer {
         mockFruits();
     }
 
-    private void mockFruits() {
+    public void mockFruits() {
         List<FruitEntity> fruits = new ArrayList<>();
-        FruitEntity f1 = new FruitEntity();
-        f1.setId(1L);
-        f1.setName("banana");
-        f1.setPrice(2.99);
-        f1.setCreationTime(LocalDateTime.of(2022,2,22,10,59));
-        f1.setUpdateTime(LocalDateTime.of(2022,2,22,10,59));
-        f1.setIsAvailable(true);
-        f1.setLevelOfSweet(8);
-        fruits.add(f1);
 
-        FruitEntity f2 = new FruitEntity();
-        f2.setId(2L);
-        f2.setName("jaca");
-        f2.setPrice(3.14);
-        f2.setCreationTime(LocalDateTime.of(2021,2,22,10,59));
-        f2.setUpdateTime(LocalDateTime.of(2021,2,22,10,59));
-        f2.setIsAvailable(true);
-        f2.setLevelOfSweet(9);
-        fruits.add(f2);
-        fruits.forEach(fruit -> fruitRepository.save(fruit));
+        for (int id = 1; id <= 50; id++) {
+            FruitEntity fruit = new FruitEntity();
+            fruit.setId(Long.valueOf(id));
+            fruit.setName("fruit_" + id);
+            fruit.setPrice(2.99 + (id * 0.1)); // Price increases by 0.1 for each fruit
+            fruit.setCreationTime(LocalDateTime.now());
+            fruit.setUpdateTime(LocalDateTime.now());
+            fruit.setIsAvailable(id % 2 == 0); // Alternate availability
+            fruit.setLevelOfSweet(id % 10); // Levels of sweetness from 0 to 9
+            fruits.add(fruit);
+        }
+
+        fruitRepository.saveAll(fruits);
     }
 
 

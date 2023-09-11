@@ -1,14 +1,12 @@
 package construo.fruitshop.fruit;
 
-import construo.fruitshop.fruit.dto.FruitInput;
-import construo.fruitshop.fruit.dto.FruitOutput;
-import construo.fruitshop.fruit.dto.FruitsOutput;
+import construo.fruitshop.fruit.dto.FruitDto;
+import construo.fruitshop.fruit.dto.FruitsDto;
 
 import java.util.Optional;
 
 public interface FruitService {
-    FruitsOutput getAll(Optional<Integer> pageNumber, Optional<Integer> pageSize);
-    FruitOutput createFruit(FruitInput inputFruit);
-
-    boolean deleteFruitById(Long fruitId);
+    FruitsDto getAll(Optional<Integer> pageNumber, Optional<Integer> pageSize);
+    FruitDto createFruit(FruitDto inputFruit);
+    boolean deleteFruitById(Long id);
 }

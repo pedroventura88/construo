@@ -12,6 +12,6 @@ import javax.persistence.Table;
 @Table(name = "fruit")
 @NoArgsConstructor
 public class FruitEntity extends ItemBaseEntity {
-    private Integer levelOfSweet; // 1 to 10
+    private Integer levelOfSweet;
 }
 
