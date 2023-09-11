@@ -39,7 +39,7 @@ public class FruitController {
         try {
             validateInput(fruitInput);
             FruitDto fruitCreated = fruitService.createFruit(fruitInput);
-            return ResponseEntity.ok(fruitCreated);
+            return ResponseEntity.status(HttpStatus.CREATED).body(fruitCreated);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Validation Error", e.getMessage()));
         } catch (Exception e) {
@@ -55,13 +55,13 @@ public class FruitController {
         }
     }
 
-    @DeleteMapping("/private/{fruitId}")
-    public ResponseEntity<String> deleteFruitById(@PathVariable Long fruitId) {
+    @DeleteMapping("/private/{id}")
+    public ResponseEntity<?> deleteFruitById(@PathVariable Long id) {
         try {
-            boolean deleted = fruitService.deleteFruitById(fruitId);
+            boolean deleted = fruitService.deleteFruitById(id);
 
             if (deleted) {
-                return ResponseEntity.ok("Fruit with ID " + fruitId + " deleted successfully");
+                return ResponseEntity.noContent().build();
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -71,4 +71,6 @@ public class FruitController {
                     .body("An unexpected error occurred while deleting the fruit");
         }
     }
+
+
 }
